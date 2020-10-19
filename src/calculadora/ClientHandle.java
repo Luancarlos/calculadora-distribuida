@@ -23,8 +23,7 @@ class ClientHandler extends Thread {
     {
         String received;
 
-        while (true)
-        {
+        while (true) {
             try {
                 // receive the answer from client
                 received = dis.readUTF();
@@ -38,47 +37,68 @@ class ClientHandler extends Thread {
                 }
 
                 if (received != null) {
-                    String resultado;
-                    Protocolo protocolo = new Protocolo();
+                    ProtocoloRequest protocolo = new ProtocoloRequest();
+                    ProtocoloResponse protocoloResponse = new ProtocoloResponse();
+
                     protocolo.converterStringValue(received);
 
                     switch (protocolo.getOperador()) {
                         case "^" :
                             int po = (int) Math.pow(protocolo.getValor1(), protocolo.getValor2());
-                            resultado = String.valueOf(po);
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(String.valueOf(po));
                             break;
 
                         case "%" :
-                            resultado = String.valueOf((protocolo.getValor1() * protocolo.getValor2()) / 100);
+                            String resultado = String.valueOf((protocolo.getValor1() * protocolo.getValor2()) / 100);
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(resultado);
                             break;
 
                         case "+" :
                             int soma = (int) (protocolo.getValor1() + protocolo.getValor2());
-                            resultado = String.valueOf(soma);
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(String.valueOf(soma));
                             break;
 
                         case "-" :
                             int sub = (int) (protocolo.getValor1() - protocolo.getValor2());
-                            resultado = String.valueOf(sub);
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(String.valueOf(sub));
                             break;
 
                         case "*" :
                             int mult = (int) (protocolo.getValor1() * protocolo.getValor2());
-                            resultado = String.valueOf(mult);
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(String.valueOf(mult));
+                            break;
+
+                        case "√" :
+                            double raiz = Math.sqrt(protocolo.getValor2());
+                            protocoloResponse.setCode(CODE.C10);
+                            protocoloResponse.setMensagem(String.valueOf(raiz));
                             break;
 
                         case "/" :
                             if (protocolo.getValor2() == 0) {
-                                resultado = "Não é um numero";
+                                protocoloResponse.setCode(CODE.C20);
+                                protocoloResponse.setMensagem("Não é um numero");
                             } else {
-                                resultado = String.valueOf(protocolo.getValor1() / protocolo.getValor2());
+                                String result = String.valueOf(protocolo.getValor1() / protocolo.getValor2());
+                                protocoloResponse.setCode(CODE.C10);
+                                protocoloResponse.setMensagem(result);
                             }
 
                             break;
-                        default: resultado = "Ocoreu um erro";
+
+                        default:
+                            protocoloResponse.setCode(CODE.C20);
+                            protocoloResponse.setMensagem(protocoloResponse.getCode().mensagem(null));
+                            break;
                     }
 
-                    dos.writeUTF(resultado);
+                    protocoloResponse.conveterValoresEmString();
+                    dos.writeUTF(protocoloResponse.getStrinResponse());
 
                 } else {
                     break;

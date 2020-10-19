@@ -39,6 +39,8 @@ public class CalculadoraController implements Initializable {
     DataOutputStream dos1;
     DataInputStream dis2;
     DataOutputStream dos2;
+    ProtocoloResponse protocoloResponse = new ProtocoloResponse();
+    boolean result = false;
 
 
     @Override
@@ -138,7 +140,13 @@ public class CalculadoraController implements Initializable {
             if(!Character.isDigit(value.charAt(0))) {
                 resultado.setText(number);
             } else {
-                resultado.setText(value + number);
+                if (result) {
+                    result = false;
+                    resultado.setText(number);
+                } else {
+                    resultado.setText(value + number);
+                }
+
             }
         }
     }
@@ -170,6 +178,10 @@ public class CalculadoraController implements Initializable {
             case "potenciacao" :
                 operatorHandle("^");
                 break;
+
+            case "raiz" :
+                operatorHandle("√");
+                break;
         }
     }
 
@@ -199,7 +211,6 @@ public class CalculadoraController implements Initializable {
             } else {
                 resultado.setText(newValue);
             }
-
         }
     }
 
@@ -218,29 +229,33 @@ public class CalculadoraController implements Initializable {
     public void equal() {
         if (operator != null) {
             value2 = resultado.getText();
-            Protocolo protocolo = new Protocolo(value1, value2, operator);
-            System.out.println(protocolo.getValorString());
+            ProtocoloRequest protocolo = new ProtocoloRequest(value1, value2, operator);
+            String res;
 
             try {
                 if (isArithmetic()) {
-                    dos1.writeUTF(protocolo.getValorString());
-                    String res = dis1.readUTF();
-                    this.clean();
-                    resultado.setText(res);
+                    dos1.writeUTF(protocolo.getStringRequest());
+                    res = dis1.readUTF();
                 } else {
-                    dos2.writeUTF(protocolo.getValorString());
-                    String res = dis2.readUTF();
-                    this.clean();
-                    resultado.setText(res);
+                    dos2.writeUTF(protocolo.getStringRequest());
+                    res = dis2.readUTF();
                 }
+
+                this.clean();
+
+                protocoloResponse.converterStringValores(res);
+                resultado.setText(protocoloResponse.getMensagem());
+                result = true;
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 this.clean();
             }
 
-
         }
     }
+
+
 
     private void closeWindowEvent(WindowEvent event) {
         System.out.println("Saindo ...");

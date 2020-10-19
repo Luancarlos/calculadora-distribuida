@@ -125,7 +125,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="delete" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="319.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#deleteItemDisplay" prefWidth="109.0" style="-fx-background-color: #e0e0e0; -fx-border-radius: 0;" text="&lt;" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <Button fx:id="raiz" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="319.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#addOperator" prefWidth="109.0" style="-fx-background-color: #e0e0e0; -fx-border-radius: 0;" text="√" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font size="26.0" />
                </font>
